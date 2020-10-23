@@ -52,17 +52,17 @@ def lambda_handler(event, context):
     
     logger.info(f"Bitcoin: r {r_value}, slope {slope}")
     
-    bool_slope = slope > threshold_bitcoin_slope
-    bool_r = r_value > threshold_bitcoin_r
+    bool_slope = slope < threshold_bitcoin_slope
+    bool_r = r_value < threshold_bitcoin_r
     bool_count = sent_count > threshold_sent_count
-    bool_score = sent_value > threshold_sent_value
+    bool_score = sent_value < threshold_sent_value
     
     if bool_slope and bool_r and bool_count and bool_score:
     
         sns = boto3.client('sns')
-        text = f""" From the last {minutes_pre} minutes we have noticed a sentiment metric of {round(sent_value,2)} with as much as {round(sent_count,2)} mentions!!! Also slope is {round(slope,2)} with an r of {round(r_value,2)}. Good time for buying Bitcoin! """
+        text = f""" From the last {minutes_pre} minutes we have noticed a sentiment metric of {round(sent_value,2)} with as much as {round(sent_count,2)} mentions!!! Also slope is {round(slope,2)} with an r of {round(r_value,2)}. Good time for selling Bitcoin! """
         sns.publish(TopicArn=topic_arn_msg,
-                    Subject='good time for buying bitcoin',
+                    Subject='good time for selling bitcoin',
                     Message=text)
     
     return {
